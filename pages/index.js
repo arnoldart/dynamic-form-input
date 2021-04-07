@@ -1,65 +1,65 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import { tw } from 'twind'
+import { useState }from 'react'
 
 export default function Home() {
+  const [inputFields, setInputFields] = useState([
+    {
+      firstName: '', 
+      lastName: '',
+      isEditable: true
+    },
+  ])
+
+  const handleChaneInput = (index, event) => {
+    const values = [...inputFields]
+    values[index][event.target.name] = event.target.value
+    setInputFields(values)
+  }
+
+  const handleSubmit = e => {
+    e.preventDefault()
+  }
+  
+  const handleAddFields = () => {
+    setInputFields([...inputFields, { firstName: '', lastName: '', isEditable: true}])
+  }
+
+  const handleRemoveFields = (index) => {
+    const values = [...inputFields]
+    values.splice(index, 1)
+    setInputFields(values)
+  }
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
+    <>
+      <div className={tw `container mx-auto`}>
+        <h2>Form Mengsedih</h2>
+        <form onSubmit={handleSubmit}>
+          {inputFields.map((inputFields, index) => {
+            if(index >= 0) {
+              return (
+                <div key={index} className={tw `flex`}>
+                <div>
+                  <input className={tw `border-2 mt-5 border-gray-700 mr-2 ${inputFields.isEditable ? "text-gray-800" : "text-gray-500"}`} onChange={event => handleChaneInput(index, event)} name="firstName" placeholder="First Name" value={inputFields.firstName} type="text"/>
+                  <input className={tw `border-2 mt-5 border-gray-700 ml-2 ${inputFields.isEditable ? "text-gray-800" : "text-gray-500"}`} onChange={event => handleChaneInput(index, event)} name="lastName" placeholder="Last Name" value={inputFields.lastName} type="text"/>
+                </div>
+                <div>
+                  { inputFields.isEditable ? (
+                    <button className={tw `ml-4 mt-5 px-2 bg-gray-500`} onClick={() => handleAddFields(index)} >ADD</button>
+                  ) : (
+                    <>
+                      <button className={tw `ml-4 mt-5 px-2 bg-gray-500`}>+</button>
+                      <button className={tw `ml-4 mt-5 px-2 bg-gray-500`}>-</button>
+                    </>
+                  )}
+                </div>
+              </div>
+              )
+            }
+          })}
+          <button onClick={handleSubmit} className={tw `p-2 bg-gray-500`}>SEND</button>
+        </form>
+      </div>
+    </>
   )
 }
